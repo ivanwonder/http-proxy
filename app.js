@@ -35,7 +35,7 @@ var options = Object.assign({
 
 // 收集错误上报日志
 app.use('/log', cors(), bodyParser.urlencoded({ extended: true }), (req, res, next) => {
-  logger.debug(req.body)
+  logger.debug((req.method.toUpperCase() === 'POST' && req.body) || (req.method.toUpperCase() === 'GET' && req.query))
   res.sendStatus(200)
 })
 
