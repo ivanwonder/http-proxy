@@ -1,6 +1,7 @@
 var express = require('express')
 var app = express()
 var cors = require('cors')
+var path = require('path')
 
 var proxy = require('http-proxy-middleware')
 var bodyParser = require('body-parser')
@@ -32,6 +33,8 @@ var options = Object.assign({
   // target: 'http://dev.market.hooray.cn',
   logLevel: 'debug'
 }, event)
+
+app.use(express.static(path.join('./static')))
 
 // 收集错误上报日志
 app.use('/log', cors(), bodyParser.urlencoded({ extended: true }), (req, res, next) => {
