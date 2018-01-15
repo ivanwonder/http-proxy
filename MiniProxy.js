@@ -37,17 +37,7 @@ MiniProxy.prototype.requestHandler = function (req, res) {
       headers: req.headers
     }
 
-    // check url
-    if (requestOptions.host === '127.0.0.1' && requestOptions.port === port) {
-      res.writeHead(200, {
-        'Content-Type': 'text/plain'
-      })
-      res.write('ok')
-      res.end()
-      return
-    }
-
-    // check if its pac.txt
+    // check if pac.txt exist
     if (requestOptions.method.toLocaleLowerCase() === 'get' && requestOptions.port === (port + '') && requestOptions.path === '/pac') {
       res.writeHead(200, {
         'Content-Type': 'text/plain'
