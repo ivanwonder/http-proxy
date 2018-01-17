@@ -1,7 +1,23 @@
 var http = require('http')
 var url = require('url')
 var fs = require('fs')
+var os = require('os')
 var port
+let pac = ''
+
+function getIpAddress () {
+  var network = os.networkInterfaces()
+  for (let json in network) {
+    for (let info of network[json]) {
+      if (!info.internal && info.family === 'IPv4') return info.address
+    }
+  }
+  for (let json in network) {
+    for (let info of network[json]) {
+      if (!info.internal && info.family === 'IPv6') return info.address
+    }
+  }
+}
 
 function MiniProxy (options) {
   this.port = options.port || 9393
@@ -26,6 +42,11 @@ MiniProxy.prototype.start = function () {
 }
 
 MiniProxy.prototype.requestHandler = function (req, res) {
+  function resEnd (pac) {
+    res.write(pac)
+    res.end()
+  }
+
   try {
     var self = this // this -> server
     var path = req.headers.path || url.parse(req.url).path
@@ -42,11 +63,18 @@ MiniProxy.prototype.requestHandler = function (req, res) {
       res.writeHead(200, {
         'Content-Type': 'text/plain'
       })
-      fs.readFile('./pac', 'UTF-8', function (err, data) {
-        if (err) throw err
-        res.write(data)
-        res.end()
-      })
+
+      var proxy = `PROXY ${getIpAddress()}:${port};`
+
+      if (pac) {
+        resEnd(pac)
+      } else {
+        fs.readFile('./pac', 'UTF-8', function (err, data) {
+          if (err) throw err
+          pac = data.replace('__PROXY__', proxy)
+          resEnd(pac)
+        })
+      }
       return
     }
 
@@ -138,7 +166,8 @@ MiniProxy.prototype.connectHandler = function (req, socket, head) {
       port: 1080,
       hostname: '127.0.0.1',
       method: 'CONNECT',
-      path: req.url
+      path: req.url,
+      requestAddress: socket.remoteAddress
     }
 
     self.emit('beforeRequest', requestOptions)
