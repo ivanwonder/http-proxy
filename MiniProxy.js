@@ -153,8 +153,14 @@ MiniProxy.prototype.connectHandler = function (req, socket, head) {
         socket.on('end', () => {
           console.log(req.url + ' socket end')
         })
+        socket.on('error', (e) => {
+          console.log(req.url + ' socket error: ' + e)
+        })
         socketProxy.on('end', () => {
           console.log(req.url + ' socketProxy end')
+        })
+        socketProxy.on('error', e => {
+          console.log(req.url + ' socket error: ' + e)
         })
       })
     })

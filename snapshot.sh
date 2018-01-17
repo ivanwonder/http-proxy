@@ -1,0 +1,1 @@
+cat ./9393.pid | xargs kill -USR2
