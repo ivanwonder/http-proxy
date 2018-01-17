@@ -3,6 +3,7 @@ var url = require('url')
 var fs = require('fs')
 var os = require('os')
 var port
+var serverPort
 let pac = ''
 
 function getIpAddress () {
@@ -25,6 +26,7 @@ function MiniProxy (options) {
   this.onBeforeRequest = options.onBeforeRequest || function () {}
   this.onBeforeResponse = options.onBeforeResponse || function () {}
   this.onRequestError = options.onRequestError || function () {}
+  serverPort = options.serverPort
 }
 MiniProxy.prototype.start = function () {
   var server = http.createServer()
@@ -163,7 +165,7 @@ MiniProxy.prototype.connectHandler = function (req, socket, head) {
     var self = this
 
     var requestOptions = {
-      port: 1080,
+      port: serverPort,
       hostname: '127.0.0.1',
       method: 'CONNECT',
       path: req.url,
