@@ -4,3 +4,4 @@ node_modules
 heapdump
 *.heapsnapshot
 *.out
+.DS_Store
