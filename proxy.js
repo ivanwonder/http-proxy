@@ -10,7 +10,7 @@ var myProxy = new MiniProxy({
   serverPort: argv.serverPort,
   youtubeProxyPort: argv.youtubeProxyPort,
   'onBeforeRequest': function (requestOptions) {
-    console.log('proxy request : ' + (requestOptions.requestAddress || '') + '|' + (requestOptions.path || '') + '|' + (requestOptions.port || ''))
+    console.log('proxy request : ' + (new Date()).toLocaleString() + '|' + (requestOptions.requestAddress || '') + '|' + (requestOptions.path || '') + '|' + (requestOptions.port || ''))
   }
 })
 
