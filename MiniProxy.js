@@ -27,6 +27,7 @@ function MiniProxy (options) {
   this.onBeforeRequest = options.onBeforeRequest || function () {}
   this.onBeforeResponse = options.onBeforeResponse || function () {}
   this.onRequestError = options.onRequestError || function () {}
+  this.onListening = options.onListening || function () {}
   serverPort = options.serverPort
   youtubeProxyPort = options.youtubeProxyPort
 }
@@ -41,7 +42,7 @@ MiniProxy.prototype.start = function () {
   server.on('beforeResponse', this.onBeforeResponse)
   server.on('requestError', this.onRequestError)
 
-  server.listen(this.port)
+  server.listen(this.port, this.onListening)
   port = this.port
 }
 
