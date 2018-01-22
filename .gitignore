@@ -8,3 +8,4 @@ heapdump
 proxy-server-darwin-x64
 proxy-server-win32-x64
 build
+dist

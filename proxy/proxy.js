@@ -1,9 +1,10 @@
 let ls
 const map = require('../utils/map')
+const path = require('path')
 
 function openProxy (args) {
   const fork = require('child_process').fork
-  ls = fork(`${__dirname}/../openProxy.js`, [], {
+  ls = fork(path.resolve('./openProxy.js'), [], {
     // detached: true
   })
 
