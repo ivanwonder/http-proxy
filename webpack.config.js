@@ -41,6 +41,14 @@ module.exports = {
       {
         from: './package.json',
         to: './'
+      },
+      {
+        from: './MiniProxy.js',
+        to: './'
+      },
+      {
+        from: './pac',
+        to: './'
       }
     ], {
       ignore: [

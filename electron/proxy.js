@@ -1,10 +1,11 @@
 let ls
 const map = require('../utils/map')
 const path = require('path')
+const {app} = require('electron')
 
 function openProxy (args) {
   const fork = require('child_process').fork
-  ls = fork(path.join(__dirname, './openProxy.js'), [], {
+  ls = fork(path.join(app.getAppPath(), './openProxy.js'), [], {
     // detached: true
   })
 
