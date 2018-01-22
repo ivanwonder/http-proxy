@@ -4,7 +4,7 @@ const path = require('path')
 
 function openProxy (args) {
   const fork = require('child_process').fork
-  ls = fork(path.resolve('./openProxy.js'), [], {
+  ls = fork(path.join(__dirname, './openProxy.js'), [], {
     // detached: true
   })
 

@@ -13,7 +13,7 @@ let appIcon = null
 
 ipc.on('put-in-tray', function (event) {
   const iconName = process.platform === 'win32' ? 'windows-icon.png' : 'iconTemplate.png'
-  const iconPath = path.resolve('./tray/' + iconName)
+  const iconPath = path.join(__dirname, './resource/' + iconName)
   appIcon = new Tray(iconPath)
   const contextMenu = Menu.buildFromTemplate([{
     label: 'close app',
@@ -35,7 +35,7 @@ if (!shareprocess) {
 
   // and load the index.html of the app.
   shareprocess.loadURL(url.format({
-    pathname: path.resolve('./shareprocess.html'),
+    pathname: path.join(__dirname, './shareprocess.html'),
     protocol: 'file:'
   }))
 

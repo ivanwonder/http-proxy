@@ -13,15 +13,15 @@ function createWindow () {
 
   // and load the index.html of the app.
   win.loadURL(url.format({
-    pathname: path.resolve('./index.html'),
+    pathname: path.join(__dirname, './index.html'),
     protocol: 'file:',
     slashes: true
   }))
 
   map.set('mainWindow', win)
 
-  require('../tray/tray.js')
-  require('../proxy/proxy')
+  require('./tray.js')
+  require('./proxy')
 
   // Open the DevTools.
   win.webContents.openDevTools()
