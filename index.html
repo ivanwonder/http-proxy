@@ -14,22 +14,13 @@
     </ul>
     <script>
       document.getElementById('createServer').addEventListener('click', function () {
-        const fork = require('child_process').fork;
-        const ls = fork('./openProxy.js');
-
-        require('electron').ipcRenderer.on('closels', (event, message) => {
-          console.log(message)  // Prints 'whoooooooh!'
+        const ipcRender = require('electron').ipcRenderer
+        ipcRender.send('createServer', {
+          port: document.getElementById('port').value || 9393,
+          proxyPort: document.getElementById('proxy_port').value || 1080,
+          youtubeProxyPort: document.getElementById('youtube_proxy_port').value || 1080
         })
-
-        ls.on('close', (code) => {
-          console.log(`child process exited with code ${code}`);
-        });
-
-        ls.on('error', function (e) {
-          console.log('error: ' + e)
-        })
-
-        ls.on('message', function (message) {
+        ipcRender.on('message', function (event, message) {
           let err = document.getElementById('error')
           if (message.error) {
             err.innerHTML = message.error
@@ -39,13 +30,11 @@
           if (message.success) {
             err.style.display = 'none'
           }
-        })
 
-        ls.send({ open: {
-          port: document.getElementById('port').value || 9393,
-          proxyPort: document.getElementById('proxy_port').value || 1080,
-          youtubeProxyPort: document.getElementById('youtube_proxy_port').value || 1080
-        } });
+          if (message.debug) {
+            console.log(message.debug)
+          }
+        })
       })
     </script>
   </body>

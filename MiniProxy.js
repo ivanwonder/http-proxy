@@ -74,7 +74,7 @@ MiniProxy.prototype.requestHandler = function (req, res) {
       if (pac) {
         resEnd(pac)
       } else {
-        fs.readFile('./pac', 'UTF-8', function (err, data) {
+        fs.readFile(`${__dirname}/pac`, 'UTF-8', function (err, data) {
           if (err) throw err
           pac = data.replace('__PROXY__', proxy)
           resEnd(pac)
