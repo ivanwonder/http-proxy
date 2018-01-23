@@ -74,7 +74,7 @@ app.on('will-quit', function () {
     if (_isWindows) {
       _cp.kill('SIGINT')
     } else {
-      process.kill(-_cp.pid, 'SIGINT')
+      process.kill(_cp.pid, 'SIGINT')
     }
     childProcess.delete(value.value)
     value = iter.next()

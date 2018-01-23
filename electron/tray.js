@@ -7,7 +7,7 @@ const ipc = electron.ipcMain
 const Menu = electron.Menu
 const Tray = electron.Tray
 const {mainWindow} = require('../utils/map')
-const {_buildByWebpack} = require('../utils/platform')
+const {_buildByWebpack, _isMacintosh} = require('../utils/platform')
 
 let shareprocess
 
@@ -17,12 +17,22 @@ ipc.on('put-in-tray', function (event) {
   const iconName = process.platform === 'win32' ? 'windows-icon.png' : 'iconTemplate.png'
   const iconPath = path.join(_buildByWebpack ? app.getAppPath() : path.resolve(__dirname), './resource/' + iconName)
   appIcon = new Tray(iconPath)
-  const contextMenu = Menu.buildFromTemplate([{
+  let options = [{
     label: 'close app',
     click: function () {
       event.sender.send('tray-removed')
     }
-  }])
+  }]
+
+  if (_isMacintosh) {
+    options.push({
+      label: 'open app',
+      click: function () {
+        mainWindow.get('mainWindow').show()
+      }
+    })
+  }
+  const contextMenu = Menu.buildFromTemplate(options)
   appIcon.on('double-click', function () {
     mainWindow.get('mainWindow').show()
   })
