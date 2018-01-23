@@ -6,7 +6,7 @@ const url = require('url')
 const ipc = electron.ipcMain
 const Menu = electron.Menu
 const Tray = electron.Tray
-const map = require('../utils/map')
+const {mainWindow} = require('../utils/map')
 const {_buildByWebpack} = require('../utils/platform')
 
 let shareprocess
@@ -24,7 +24,7 @@ ipc.on('put-in-tray', function (event) {
     }
   }])
   appIcon.on('double-click', function () {
-    map.get('mainWindow').show()
+    mainWindow.get('mainWindow').show()
   })
   appIcon.setToolTip('Electron Demo in the tray.')
   appIcon.setContextMenu(contextMenu)
@@ -32,7 +32,8 @@ ipc.on('put-in-tray', function (event) {
 
 ipc.on('remove-tray', function () {
   appIcon.destroy()
-  map.delete('mainWindow')
+  mainWindow.get('mainWindow').destroy()
+  mainWindow.delete('mainWindow')
   app.quit()
 })
 

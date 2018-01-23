@@ -36,7 +36,7 @@ module.exports = {
         to: './resource'
       },
       {
-        from: './electron/openProxy.js',
+        from: './openProxy.js',
         to: './'
       },
       {

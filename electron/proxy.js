@@ -1,47 +1,51 @@
-let ls
-const map = require('../utils/map')
+const {childProcess} = require('../utils/map')
 const path = require('path')
 const {app} = require('electron')
 const {_isWindows, _buildByWebpack} = require('../utils/platform')
 
-function openProxy (args) {
+function openProxy (args, listen) {
+  let _rej
+  let _res
+  const _promise = new Promise((resolve, reject) => {
+    _rej = reject
+    _res = resolve
+  })
+
   const fork = require('child_process').fork
-  ls = fork(path.join(_buildByWebpack ? app.getAppPath() : path.resolve(__dirname), './openProxy.js'), [], {
-    // detached: true
+  const _ls = fork(path.join(_buildByWebpack ? app.getAppPath() : path.join(__dirname, '../'), './openProxy.js'), [], {
+    detached: !!_isWindows
   })
+  const id = new Date().getTime()
 
-  ls.on('close', (code) => {
+  _ls.on('close', (code) => {
     console.log(`child process exited with code ${code}`)
+    _rej({error: code})
   })
 
-  ls.on('error', function (e) {
+  _ls.on('error', function (e) {
     console.log('error: ' + e)
+    _rej({error: e})
   })
 
-  ls.on('message', function (message) {
-    map.get('mainWindow').webContents.send('message', message)
+  _ls.on('message', function (message) {
+    if (message.success) {
+      childProcess.set(id, _ls)
+      _res(message, id)
+    } else if (message.error) {
+      _rej(message)
+    } else {
+      listen(id)
+    }
   })
 
-  ls.send({ open: {
+  _ls.send({ open: {
     port: args.port,
     proxyPort: args.proxyPort,
-    youtubeProxyPort: args.youtubeProxyPort
+    youtubeProxyPort: args.youtubeProxyPort,
+    id
   } })
+
+  return _promise
 }
 
-const electron = require('electron')
-const ipc = electron.ipcMain
-
-electron.app.on('will-quit', function () {
-  if (!ls) return
-
-  if (_isWindows) {
-    ls.kill('SIGINT')
-  } else {
-    process.kill(-ls.pid, 'SIGINT')
-  }
-})
-
-ipc.on('createServer', function (event, args) {
-  openProxy(args)
-})
+module.exports = openProxy
