@@ -51,6 +51,10 @@ module.exports = {
         from: './pac',
         to: './'
       }
+      // {
+      //   from: {glob: './electron/script/*.+(sh|bat)'},
+      //   to: './script/[name].[ext]'
+      // }
     ], {
       ignore: [
         // Doesn't copy any files with a txt extension

@@ -27,6 +27,13 @@ function createWindow () {
   ipcMain.on('createServer', function (event, args) {
     openProxy(args).then((message, id) => {
       win.webContents.send('message', message)
+      // try {
+      //   await require('./script/childProcess').spawnPromise(path.join(_buildByWebpack ? app.getAppPath() : path.resolve(__dirname), './script/on.sh'), [`http://127.0.0.1:${args.port}/pac`], {})
+      // } catch (e) {
+      //   console.log(e)
+      //   win.webContents.send('message', {error: e})
+      // }
+      require('./script/childProcess').execReplaceProxy(args.port)
     }).catch(e => {
       win.webContents.send('message', e)
     })
