@@ -2,10 +2,11 @@ let ls
 const map = require('../utils/map')
 const path = require('path')
 const {app} = require('electron')
+const {_isWindows, _buildByWebpack} = require('../utils/platform')
 
 function openProxy (args) {
   const fork = require('child_process').fork
-  ls = fork(path.join(app.getAppPath(), './openProxy.js'), [], {
+  ls = fork(path.join(_buildByWebpack ? app.getAppPath() : path.resolve(__dirname), './openProxy.js'), [], {
     // detached: true
   })
 
@@ -32,7 +33,13 @@ const electron = require('electron')
 const ipc = electron.ipcMain
 
 electron.app.on('will-quit', function () {
-  ls && ls.kill()
+  if (!ls) return
+
+  if (_isWindows) {
+    ls.kill('SIGINT')
+  } else {
+    process.kill(-ls.pid, 'SIGINT')
+  }
 })
 
 ipc.on('createServer', function (event, args) {

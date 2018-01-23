@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run build && electron dist",
     "build": "webpack",
-    "package": "electron-packager dist",
-    "package-winstall": "node ./script/build-winstall.js"
+    "package": "npm run build && electron-packager dist",
+    "package-winstall": "npm run package && node ./script/build-winstall.js"
   },
   "author": "",
   "license": "ISC",
@@ -24,6 +24,7 @@
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
+    "uglifyjs-webpack-plugin": "^1.1.6",
     "webpack": "^3.10.0"
   },
   "dependencies": {

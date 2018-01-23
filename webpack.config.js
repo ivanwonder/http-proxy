@@ -1,6 +1,7 @@
 const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin') // installed via npm
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const webpack = require('webpack')
 
@@ -68,7 +69,9 @@ module.exports = {
       // copyUnmodified: true
     }),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(nodeEnv)
-    })
+      'process.env.NODE_ENV': JSON.stringify(nodeEnv),
+      'buildByWebpack': JSON.stringify(true)
+    }),
+    new UglifyJsPlugin()
   ]
 }

@@ -13,10 +13,15 @@ if (typeof process === 'object') {
 const nodeEnv = process.env.NODE_ENV || 'development'
 const isProd = nodeEnv === 'production'
 
+let _buildByWebpack = false
+
+if (typeof buildByWebpack === 'boolean') _buildByWebpack = buildByWebpack
+
 module.exports = {
   _isLinux,
   _isMacintosh,
   _isRootUser,
   _isWindows,
-  isProd
+  isProd,
+  _buildByWebpack
 }
