@@ -44,7 +44,9 @@ ipc.on('remove-tray', function () {
   appIcon.destroy()
   mainWindow.get('mainWindow').destroy()
   mainWindow.delete('mainWindow')
-  app.quit()
+  require('./script/childProcess').execReplaceProxyOnWindow(null, true, () => {
+    app.quit()
+  })
 })
 
 if (!shareprocess) {

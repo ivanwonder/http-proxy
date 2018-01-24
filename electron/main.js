@@ -96,9 +96,9 @@ app.on('will-quit', function () {
     value = iter.next()
   }
 
-  if (haveProxyServerKill) {
-    if (_isWindows) {
-      setProxyScript.execReplaceProxyOnWindow(null, true)
-    }
-  }
+  // if (haveProxyServerKill) {
+  //   if (_isWindows) {
+  //     setProxyScript.execReplaceProxyOnWindow(null, true)
+  //   }
+  // }
 })

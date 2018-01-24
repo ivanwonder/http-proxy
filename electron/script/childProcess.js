@@ -64,7 +64,7 @@ var execReplaceProxy = function (port) {
   })
 }
 
-var execReplaceProxyOnWindow = function (port, close) {
+var execReplaceProxyOnWindow = function (port, close, listen) {
   let _spawn = spawn
   spawn = function (command, args, options) {
     let _option = {shell: true}
@@ -78,40 +78,40 @@ var execReplaceProxyOnWindow = function (port, close) {
 
   let _args = getArgs()
 
-  var enableProxy = spawn('reg', _args)
-  enableProxy.stderr.on('data', function (data) {
-    console.log(`ps stderr: ${data}`)
-  })
-  enableProxy.stdout.on('data', data => {
-    console.log(data)
-  })
-  enableProxy.on('error', function (e) {
-    console.log(e)
-  })
-  enableProxy.on('close', function () {
-    let _args = getArgs()
-    _args[3] = 'AutoConfigURL'
-    if (close) {
-      _args[0] = 'delete'
-      _args.splice(4, 4)
-    } else {
-      // _args[3] = 'AutoConfigURL'
-      _args[7] = `"http://127.0.0.1:${port}/pac"`
-      _args.splice(4, 2)
-    }
-    const setPacConfig = spawn('reg', _args)
-    setPacConfig.on('close', function () {
-      let _args = getArgs()
-      _args[3] = 'ProxyOverride'
-      _args[5] = 'REG_SZ'
-      _args[7] = '""'
-      spawn('reg', _args)
+  if (!close) {
+    var enableProxy = spawn('reg', _args)
+    enableProxy.stderr.on('data', function (data) {
+      console.log(`ps stderr: ${data}`)
     })
 
-    setPacConfig.stderr.on('data', data => {
-      console.log(data)
+    enableProxy.on('close', function () {
+      console.log('close')
     })
+  }
+
+  _args = getArgs()
+  _args[3] = 'AutoConfigURL'
+  if (close) {
+    _args[0] = 'delete'
+    _args.splice(4, 4)
+  } else {
+    // _args[3] = 'AutoConfigURL'
+    _args[7] = `"http://127.0.0.1:${port}/pac"`
+    _args.splice(4, 2)
+  }
+  const setPacConfig = spawn('reg', _args)
+  setPacConfig.on('close', function () {
+    console.log('close')
+    listen && listen()
   })
+
+  if (!close) {
+    _args = getArgs()
+    _args[3] = 'ProxyOverride'
+    _args[5] = 'REG_SZ'
+    _args[7] = '""'
+    spawn('reg', _args)
+  }
 }
 
 module.exports = {
