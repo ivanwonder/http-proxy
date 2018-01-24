@@ -3,7 +3,7 @@ const path = require('path')
 const url = require('url')
 const {mainWindow, childProcess} = require('../utils/map')
 const {_buildByWebpack, _isWindows} = require('../utils/platform')
-
+const setProxyScript = require('./script/childProcess')
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
@@ -33,7 +33,11 @@ function createWindow () {
       //   console.log(e)
       //   win.webContents.send('message', {error: e})
       // }
-      require('./script/childProcess').execReplaceProxy(args.port)
+      if (_isWindows) {
+        setProxyScript.execReplaceProxyOnWindow(args.port)
+      } else {
+        setProxyScript.execReplaceProxy(args.port)
+      }
     }).catch(e => {
       win.webContents.send('message', e)
     })
@@ -70,12 +74,16 @@ app.on('activate', () => {
   // dock icon is clicked and there are no other windows open.
   if (win === null) {
     createWindow()
+  } else {
+    win.show()
   }
 })
 
 app.on('will-quit', function () {
   let iter = childProcess.keys()
   let value = iter.next()
+  let haveProxyServerKill = false
+
   while (!value.done) {
     let _cp = childProcess.get(value.value)
     if (_isWindows) {
@@ -83,7 +91,14 @@ app.on('will-quit', function () {
     } else {
       process.kill(_cp.pid, 'SIGINT')
     }
+    haveProxyServerKill = true
     childProcess.delete(value.value)
     value = iter.next()
+  }
+
+  if (haveProxyServerKill) {
+    if (_isWindows) {
+      setProxyScript.execReplaceProxyOnWindow(null, true)
+    }
   }
 })
