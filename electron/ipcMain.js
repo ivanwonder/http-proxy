@@ -60,6 +60,8 @@ ipcMain.on('createServer', function (event, args) {
               // 忽略失败的消息，继续走关闭app的流程
                 next()
               })
+          } else {
+            next()
           }
         }
       })
@@ -77,6 +79,7 @@ proxyServerEvent.on('closeServer', function (args) {
   // const message = args.message
   if (!id) return
   setProxyScript.waitForChildProcessClose(childProcess.get(id)).then(() => {
+    childProcess.delete(id)
     const win = mainWindow.get('mainWindow')
     exec(setProxyScript.getScriptOfDeletePacURL()) // 关闭代理
     win.webContents.send('serverCloseResult', {id, code: 0})
