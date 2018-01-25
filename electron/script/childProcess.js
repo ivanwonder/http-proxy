@@ -116,11 +116,23 @@ var execReplaceProxyOnWindow = function (port, close, listen) {
 }
 
 var getScriptOfSetPacURL = function (port) {
-  return _isWindows ? `reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyEnable /t REG_DWORD /d 0 /f && reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v AutoConfigURL /d "127.0.0.1:${port}/pac" /f && reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyOverride /t REG_SZ /d "" /f` : ''
+  return _isWindows ? `reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyEnable /t REG_DWORD /d 0 /f && reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v AutoConfigURL /d "http://127.0.0.1:${port}/pac" /f && reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyOverride /t REG_SZ /d "" /f` : ''
 }
 
 var getScriptOfDeletePacURL = function () {
   return _isWindows ? `reg delete "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v AutoConfigURL /f` : ''
+}
+
+function waitForChildProcessClose (cp) {
+  return new Promise((resolve, reject) => {
+    cp.on('close', (code) => {
+      resolve(code)
+    })
+    cp.on('error', e => {
+      reject(e)
+    })
+    cp.kill()
+  })
 }
 
 module.exports = {
@@ -128,5 +140,6 @@ module.exports = {
   execReplaceProxy,
   execReplaceProxyOnWindow,
   getScriptOfSetPacURL,
-  getScriptOfDeletePacURL
+  getScriptOfDeletePacURL,
+  waitForChildProcessClose
 }

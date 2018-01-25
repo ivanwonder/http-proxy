@@ -27,6 +27,10 @@ class MyStream {
     if (typeof func !== 'function') throw new Error('args must be a function!')
     redueStream(this._streamArray, func)()
   }
+
+  remove (func) {
+    this._streamArray = this._streamArray.filter(value => value !== func)
+  }
 }
 
 module.exports = MyStream

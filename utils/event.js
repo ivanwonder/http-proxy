@@ -1,5 +1,6 @@
 const EventEmitter = require('events')
 
 module.exports = {
-  mainWindowMessage: new EventEmitter()
+  mainWindowMessage: new EventEmitter(),
+  proxyServerEvent: new EventEmitter()
 }

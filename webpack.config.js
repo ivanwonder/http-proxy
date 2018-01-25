@@ -24,7 +24,7 @@ module.exports = {
     filename: 'main.js'
   },
   plugins: [
-    new CleanWebpackPlugin(['dist']),
+    new CleanWebpackPlugin(['dist', 'build', 'proxy-server-win32-x64']),
     new CopyWebpackPlugin([
       // Ignore some files using glob in nested directory
       {

@@ -34,7 +34,7 @@ function openProxy (args, listen) {
     } else if (message.error) {
       _rej(message)
     } else {
-      listen(id)
+      listen([message, id])
     }
   })
 

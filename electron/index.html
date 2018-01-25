@@ -12,9 +12,12 @@
       <input type="button" value="create proxy server" id="createServer">
       <p id="error" style="color: red; display:none"></p>
     </ul>
+    <ul id="server_opened">
+      <li>the server opened:</li>
+    </ul>
     <script>
+      const ipcRender = require('electron').ipcRenderer
       document.getElementById('createServer').addEventListener('click', function () {
-        const ipcRender = require('electron').ipcRenderer
         ipcRender.send('createServer', {
           port: document.getElementById('port').value || 9393,
           proxyPort: document.getElementById('proxy_port').value || 1080,
@@ -35,6 +38,40 @@
             console.log(message.debug)
           }
         })
+      })
+
+      const eleMap = new Map()
+      const parent = document.getElementById('server_opened')
+
+      function createProxyElement (id, args) {
+        let li = document.createElement('li')
+        let name = document.createTextNode(`server id: ${args.port}; proxyPort: ${args.proxyPort}; youtubeProxyPort: ${args.youtubeProxyPort}`)
+        let button = document.createElement('button')
+        button.textContent = 'close proxy'
+        button.addEventListener('click', () => ipcRender.send('closeServer', {id}))
+        li.appendChild(name)
+        li.appendChild(button)
+
+        eleMap.set(id, li)
+
+        parent.appendChild(li)
+      }
+
+      function removeEle (id) {
+        parent.removeChild(eleMap.get(id))
+        eleMap.delete(id)
+      }
+
+      ipcRender.on('serverCloseResult', (event, args) => {
+        if (args.code === 0) {
+          removeEle(args.id)
+        }
+      })
+
+      ipcRender.on('serverOpenResult', (event, args) => {
+        if(args.code === 0) {
+          createProxyElement(args.id, args.args)
+        }
       })
     </script>
   </body>
