@@ -17,10 +17,10 @@ function openProxy (args, listen) {
   })
   const id = new Date().getTime()
 
-  _ls.on('close', (code) => {
-    console.log(`child process exited with code ${code}`)
-    _rej({error: code})
-  })
+  // _ls.on('close', (code) => {
+  //   console.log(`child process exited with code ${code}`)
+  //   _rej({error: code})
+  // })
 
   _ls.on('error', function (e) {
     console.log('error: ' + e)
@@ -30,7 +30,7 @@ function openProxy (args, listen) {
   _ls.on('message', function (message) {
     if (message.success) {
       childProcess.set(id, _ls)
-      _res(message, id)
+      _res([message, id])
     } else if (message.error) {
       _rej(message)
     } else {

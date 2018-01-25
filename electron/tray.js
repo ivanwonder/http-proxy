@@ -41,10 +41,14 @@ ipc.on('put-in-tray', function (event) {
 })
 
 ipc.on('remove-tray', function () {
-  appIcon.destroy()
-  mainWindow.get('mainWindow').destroy()
-  mainWindow.delete('mainWindow')
-  require('./script/childProcess').execReplaceProxyOnWindow(null, true, () => {
+  function destroy () {
+    appIcon.destroy()
+    mainWindow.get('mainWindow').destroy()
+    mainWindow.delete('mainWindow')
+  }
+
+  global.beforeQuitEvent.on(() => {
+    destroy()
     app.quit()
   })
 })

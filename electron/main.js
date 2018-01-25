@@ -1,9 +1,8 @@
-const {app, BrowserWindow, ipcMain} = require('electron')
+const {app, BrowserWindow} = require('electron')
 const path = require('path')
 const url = require('url')
-const {mainWindow, childProcess} = require('../utils/map')
-const {_buildByWebpack, _isWindows} = require('../utils/platform')
-const setProxyScript = require('./script/childProcess')
+const {mainWindow} = require('../utils/map')
+const {_buildByWebpack} = require('../utils/platform')
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
@@ -21,35 +20,18 @@ function createWindow () {
 
   mainWindow.set('mainWindow', win)
 
-  require('./tray.js')
-  var openProxy = require('./proxy')
-
-  ipcMain.on('createServer', function (event, args) {
-    openProxy(args).then((message, id) => {
-      win.webContents.send('message', message)
-      // try {
-      //   await require('./script/childProcess').spawnPromise(path.join(_buildByWebpack ? app.getAppPath() : path.resolve(__dirname), './script/on.sh'), [`http://127.0.0.1:${args.port}/pac`], {})
-      // } catch (e) {
-      //   console.log(e)
-      //   win.webContents.send('message', {error: e})
-      // }
-      if (_isWindows) {
-        setProxyScript.execReplaceProxyOnWindow(args.port)
-      } else {
-        setProxyScript.execReplaceProxy(args.port)
-      }
-    }).catch(e => {
-      win.webContents.send('message', e)
-    })
-  })
-
   // Open the DevTools.
-  win.webContents.openDevTools()
+  !_buildByWebpack && win.webContents.openDevTools()
 
   win.on('close', (event) => {
     win.hide()
     event.preventDefault()
   })
+
+  // 加载必要代码
+  require('../utils/gloable')
+  require('./ipcMain')
+  require('./tray.js')
 }
 
 app.on('quit', function () {
@@ -67,6 +49,7 @@ app.on('window-all-closed', () => {
   // if (process.platform !== 'darwin') {
   //   app.quit()
   // }
+  win = null
 })
 
 app.on('activate', () => {
@@ -77,28 +60,4 @@ app.on('activate', () => {
   } else {
     win.show()
   }
-})
-
-app.on('will-quit', function () {
-  let iter = childProcess.keys()
-  let value = iter.next()
-  let haveProxyServerKill = false
-
-  while (!value.done) {
-    let _cp = childProcess.get(value.value)
-    if (_isWindows) {
-      _cp.kill('SIGINT')
-    } else {
-      process.kill(_cp.pid, 'SIGINT')
-    }
-    haveProxyServerKill = true
-    childProcess.delete(value.value)
-    value = iter.next()
-  }
-
-  // if (haveProxyServerKill) {
-  //   if (_isWindows) {
-  //     setProxyScript.execReplaceProxyOnWindow(null, true)
-  //   }
-  // }
 })
