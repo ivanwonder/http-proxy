@@ -52,6 +52,14 @@ app.on('window-all-closed', () => {
   win = null
 })
 
+app.on('before-quit', function (event) {
+  const _quit = require('./quit')
+  if (!_quit.isPrepareToQuit()) {
+    _quit.destroy()
+    event.preventDefault()
+  }
+})
+
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.

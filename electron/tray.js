@@ -41,16 +41,8 @@ ipc.on('put-in-tray', function (event) {
 })
 
 ipc.on('remove-tray', function () {
-  function destroy () {
-    // appIcon.destroy() // 此时destroy会导致tray的mouseExit触发不能获取对应的参数
-    mainWindow.get('mainWindow').destroy()
-    mainWindow.delete('mainWindow')
-  }
-
-  global.beforeQuitEvent.on(() => {
-    destroy()
-    app.quit()
-  })
+  require('./quit').destroy()
+  // appIcon.destroy() // 此时destroy会导致tray的mouseExit触发不能获取对应的参数
 })
 
 if (!shareprocess) {
