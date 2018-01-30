@@ -32,6 +32,7 @@ function createWindow () {
   require('../utils/gloable')
   require('./ipcMain')
   require('./tray.js')
+  require('./file/beginDelete')
 }
 
 app.on('quit', function () {
