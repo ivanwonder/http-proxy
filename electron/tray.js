@@ -33,7 +33,7 @@ ipc.on('put-in-tray', function (event) {
     })
   }
   const contextMenu = Menu.buildFromTemplate(options)
-  appIcon.on('double-click', function () {
+  appIcon.on('click', function () {
     mainWindow.get('mainWindow').show()
   })
   appIcon.setToolTip('Electron Demo in the tray.')
@@ -41,8 +41,11 @@ ipc.on('put-in-tray', function (event) {
 })
 
 ipc.on('remove-tray', function () {
-  require('./quit').destroy()
+  if (!_isMacintosh) {
+    appIcon.destroy() // 此时destroy会导致tray的mouseExit触发不能获取对应的参数
+  }
   // appIcon.destroy() // 此时destroy会导致tray的mouseExit触发不能获取对应的参数
+  require('./quit').destroy()
 })
 
 if (!shareprocess) {
