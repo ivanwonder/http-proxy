@@ -36,7 +36,7 @@ ipc.on('put-in-tray', function (event) {
   appIcon.on('click', function () {
     mainWindow.get('mainWindow').show()
   })
-  appIcon.setToolTip('Electron Demo in the tray.')
+  appIcon.setToolTip('proxy-server')
   appIcon.setContextMenu(contextMenu)
 })
 
