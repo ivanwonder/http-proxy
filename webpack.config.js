@@ -50,6 +50,10 @@ module.exports = {
       {
         from: './pac',
         to: './'
+      },
+      {
+        from: './electron/childprocess',
+        to: './childprocess'
       }
       // {
       //   from: {glob: './electron/script/*.+(sh|bat)'},

@@ -2,7 +2,6 @@ const {childProcess} = require('../utils/map')
 const path = require('path')
 const {app} = require('electron')
 const {_isWindows, _buildByWebpack} = require('../utils/platform')
-const fs = require('fs')
 const MyFile = require('./file/file')
 
 function openProxy (args, listen) {
