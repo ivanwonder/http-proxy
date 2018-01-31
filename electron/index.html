@@ -49,8 +49,14 @@
         let button = document.createElement('button')
         button.textContent = 'close proxy'
         button.addEventListener('click', () => ipcRender.send('closeServer', {id}))
+
+        let button1 = document.createElement('button')
+        button1.textContent = 'open log'
+        button1.addEventListener('click', () => ipcRender.send('openLogFile', {id}))
+
         li.appendChild(name)
         li.appendChild(button)
+        li.appendChild(button1)
 
         eleMap.set(id, li)
 

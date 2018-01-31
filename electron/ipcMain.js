@@ -1,4 +1,4 @@
-const {ipcMain} = require('electron')
+const {ipcMain, shell} = require('electron')
 var openProxy = require('./proxy')
 const {mainWindow} = require('../utils/map')
 const {_isWindows} = require('../utils/platform')
@@ -85,4 +85,12 @@ proxyServerEvent.on('closeServer', function (args) {
     win.webContents.send('serverCloseResult', {id, code: 0})
     global.beforeQuitEvent.remove(id)
   })
+})
+
+ipcMain.on('openLogFile', function (event, args) {
+  const id = args.id
+  if (!id) return
+
+  const MyFile = require('./file/file')
+  shell.openItem(MyFile.logPathNameById(id))
 })
