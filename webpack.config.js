@@ -9,7 +9,10 @@ const nodeEnv = process.env.NODE_ENV || 'development'
 // const isProd = nodeEnv === 'production';
 
 module.exports = {
-  entry: './main.js',
+  entry: {
+    main: './main.js',
+    deleteLogFile: './electron/childprocess/deleteLogFile.js'
+  },
   target: 'node',
   externals: [
     function (context, request, callback) {
@@ -21,7 +24,7 @@ module.exports = {
   ],
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'main.js'
+    filename: '[name].js'
   },
   plugins: [
     new CleanWebpackPlugin(['dist', 'build', 'proxy-server-win32-x64', 'proxy-server-darwin-x64']),
@@ -50,10 +53,6 @@ module.exports = {
       {
         from: './pac',
         to: './'
-      },
-      {
-        from: './electron/childprocess',
-        to: './childprocess'
       }
       // {
       //   from: {glob: './electron/script/*.+(sh|bat)'},
