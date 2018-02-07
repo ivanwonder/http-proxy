@@ -116,11 +116,11 @@ var execReplaceProxyOnWindow = function (port, close, listen) {
 }
 
 var getScriptOfSetPacURL = function (port) {
-  return _isWindows ? `reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyEnable /t REG_DWORD /d 0 /f && reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v AutoConfigURL /d "http://127.0.0.1:${port}/pac" /f && reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyOverride /t REG_SZ /d "" /f` : ''
+  return _isWindows ? `reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyEnable /t REG_DWORD /d 0 /f && reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v AutoConfigURL /d "http://127.0.0.1:${port}/pac" /f && reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyOverride /t REG_SZ /d "" /f` : `networksetup -setautoproxyurl Wi-Fi http://127.0.0.1:${port}/pac && networksetup -setwebproxystate Wi-Fi off`
 }
 
 var getScriptOfDeletePacURL = function () {
-  return _isWindows ? `reg delete "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v AutoConfigURL /f` : ''
+  return _isWindows ? `reg delete "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v AutoConfigURL /f` : `networksetup -setautoproxystate Wi-Fi off && networksetup -setwebproxystate Wi-Fi off`
 }
 
 function waitForChildProcessClose (cp) {
