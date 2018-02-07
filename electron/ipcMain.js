@@ -91,6 +91,9 @@ ipcMain.on('openLogFile', function (event, args) {
   const id = args.id
   if (!id) return
 
+  const type = args.type
   const MyFile = require('./file/file')
-  shell.openItem(MyFile.logPathNameById(id))
+  const fileName = MyFile.logPathNameById(id)
+  type === 1 && shell.openItem(fileName)
+  type === 2 && shell.showItemInFolder(fileName)
 })
