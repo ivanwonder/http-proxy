@@ -39,12 +39,7 @@ ipcMain.on('createServer', function (event, args) {
         }
       }, id)
 
-      if (_isWindows) {
-      // setProxyScript.execReplaceProxyOnWindow(args.port)
-        exec(setProxyScript.getScriptOfSetPacURL(args.port))
-      } else {
-        setProxyScript.execReplaceProxy(args.port)
-      }
+      exec(setProxyScript.getScriptOfSetPacURL(args.port))
 
       global.beforeQuitEvent.register(next => {
         return () => {
