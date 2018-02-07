@@ -6,6 +6,7 @@ var proxy = "__PROXY__";
 var rules = [
   ".spec.whatwg.org",
   "wanqu.co",
+  "duotai.love",
   "||2dbook.com",
   "||4tern.com",
   "|http://85.17.73.31/",
