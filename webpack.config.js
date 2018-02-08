@@ -1,31 +1,42 @@
 const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin') // installed via npm
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+
+const webpack = require('webpack')
+
+const nodeEnv = process.env.NODE_ENV || 'development'
+// const isProd = nodeEnv === 'production';
 
 module.exports = {
-  entry: './main.js',
-  target: 'node',
-  externals: {
-    electron: {
-      commonjs: 'electron',
-      amd: 'electron',
-      root: '_' // indicates global variable
-    }
+  entry: {
+    main: './main.js',
+    deleteLogFile: './electron/childprocess/deleteLogFile.js'
   },
+  target: 'node',
+  externals: [
+    function (context, request, callback) {
+      if (/^electron$/.test(request)) {
+        return callback(null, 'commonjs ' + request)
+      }
+      callback()
+    }
+  ],
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'main.js'
+    filename: '[name].js'
   },
   plugins: [
+    new CleanWebpackPlugin(['dist', 'build', 'proxy-server-win32-x64', 'proxy-server-darwin-x64']),
     new CopyWebpackPlugin([
       // Ignore some files using glob in nested directory
       {
-        from: './tray',
-        to: './tray',
-        ignore: ['*.js']
+        from: './electron/*.html',
+        to: './[name].html'
       },
       {
-        from: './*.html',
-        to: './'
+        from: './electron/resource',
+        to: './resource'
       },
       {
         from: './openProxy.js',
@@ -34,7 +45,19 @@ module.exports = {
       {
         from: './package.json',
         to: './'
+      },
+      {
+        from: './MiniProxy.js',
+        to: './'
+      },
+      {
+        from: './pac',
+        to: './'
       }
+      // {
+      //   from: {glob: './electron/script/*.+(sh|bat)'},
+      //   to: './script/[name].[ext]'
+      // }
     ], {
       ignore: [
         // Doesn't copy any files with a txt extension
@@ -51,6 +74,11 @@ module.exports = {
       // a watch or webpack-dev-server build. Setting this
       // to `true` copies all files.
       // copyUnmodified: true
-    })
+    }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(nodeEnv),
+      'buildByWebpack': JSON.stringify(true)
+    }),
+    new UglifyJsPlugin()
   ]
 }

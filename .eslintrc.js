@@ -5,6 +5,7 @@ module.exports = {
         "node": true
     },
     "globals": {
-        "Pubsub": true
+        "Pubsub": true,
+        "buildByWebpack": true
     }
 };
