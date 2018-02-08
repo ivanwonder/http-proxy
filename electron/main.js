@@ -33,6 +33,7 @@ function createWindow () {
   require('./ipcMain')
   require('./tray.js')
   require('./file/beginDelete')
+  require('./menu')
 }
 
 app.on('quit', function () {
