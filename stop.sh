@@ -1,1 +1,0 @@
-ps -ef | grep "node proxy.js" | awk '{print $2}' | xargs kill
