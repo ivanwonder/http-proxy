@@ -1,7 +1,7 @@
 FROM debian:jessie-backports
 MAINTAINER ivan
 
-RUN apt-get -y update && apt-get install -y wget && apt-get clean
+RUN apt-get -y update && apt-get install -y wget && apt-get install -y vim && apt-get clean
 
 WORKDIR "/var/www"
 RUN wget http://tengine.taobao.org/download/tengine-2.2.1.tar.gz \
