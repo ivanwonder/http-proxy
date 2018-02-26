@@ -1,0 +1,10 @@
+version: '3'
+services:
+  webapp:
+    build: .
+    image: tengine:latest
+    ports:
+      - 81:80
+      - 82:8082
+    volumes:
+      - F:/test/nginx/:/etc/nginx/

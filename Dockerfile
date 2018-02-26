@@ -17,4 +17,6 @@ RUN apt-get -y install build-essential \
     && make \
     && make install
 
+ADD ./nginx.conf /usr/local/nginx/conf
+
 CMD ["/usr/local/nginx/sbin/nginx", "-g", "daemon off;"]
